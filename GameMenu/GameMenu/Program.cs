@@ -1,8 +1,8 @@
-﻿namespace GameMenu
-{
-    internal class Program
-    {
-        static void Main(string[] args)
+﻿using System.Diagnostics.Metrics;
+using System.Drawing;
+
+Chess();
+        static void Chess()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
    
@@ -64,7 +64,7 @@
                     Console.WriteLine("Red's turn\n");
                 }
 
-                //Board being created
+                //Chess board being created
                 for (int row = 0; row < multiArray.GetLength(0); row++)
                 {
                     Console.Write((8 - row) + " ");
@@ -156,10 +156,10 @@
                 }
                 Console.WriteLine();
                 Console.Write("\nFrom: ");
-                string from = Console.ReadLine();
+                string from = Console.ReadLine() ?? "";
 
                 Console.Write("To: ");
-                string to = Console.ReadLine();
+                string to = Console.ReadLine() ?? "";
 
                 char fromCol = from[0];
                 char fromRow = from[1];
@@ -208,5 +208,3 @@
                 Console.WriteLine("You have moved from " + from + " to " + to);
             }
         }
-    }
-}
