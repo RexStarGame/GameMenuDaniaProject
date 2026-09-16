@@ -1,10 +1,8 @@
 ﻿using System.Diagnostics.Metrics;
+using System.Drawing;
 
-namespace GameMenu
-{
-    internal class Program
-    {
-        static void Main(string[] args)
+MainMastermind();
+static void MainMastermind()
         {
             string[] codeArray = new string[4];
 
@@ -33,46 +31,107 @@ namespace GameMenu
             //loop checking player input until all true or trials reach 10
             while (counter < 10)
             {
+               
+                bool inputOkay = false;
 
-                Console.WriteLine("Please enter guess: ");
+                while (inputOkay == false)
+                {
+                    Console.WriteLine("Please enter guess: ");
 
-                //get user input and split it into an array
-                string userInput = Console.ReadLine();
-                userInputArray = userInput.Split(',');
+                    //get user input and and check for empty
+                    string userInput = Console.ReadLine() ?? "";
+                    if (string.IsNullOrEmpty(userInput))
+                    {
+                        Console.WriteLine("Please provide input");
+                        continue;
+                    }
+                    //split input by , into userInputArray
+                    userInputArray = userInput.Split(',');
 
-                Console.WriteLine($"Your guess: {userInputArray[0]}, {userInputArray[1]}, {userInputArray[2]}, {userInputArray[3]}");
+                    //check if all 4 places in array has been given value
+                    if (userInputArray.Length != 4)
+                    {
+                        Console.WriteLine("Incorrect answer method, please provide 4 inputs like so 1,2,3,4");
+                        continue;
+                    }
 
-                //compare the user input with the codeArray and print V for correct and X for incorrect
-                int result1 = string.Compare(codeArray[0], userInputArray[0], true);
-                int result2 = string.Compare(codeArray[1], userInputArray[1], true);
-                int result3 = string.Compare(codeArray[2], userInputArray[2], true);
-                int result4 = string.Compare(codeArray[3], userInputArray[3], true);
+                    //check each userInputArray if the input matches one of the colors in the color options or write failure message to user
+                    bool containsColor = colors.Any(color =>
 
-                if (result1 == 0)
-                { Console.WriteLine("V"); }
-                else
-                { Console.WriteLine("X"); }
-                if (result2 == 0)
-                { Console.WriteLine("V"); }
-                else
-                { Console.WriteLine("X"); }
-                if (result3 == 0)
-                { Console.WriteLine("V"); }
-                else
-                { Console.WriteLine("X"); }
-                if (result4 == 0)
-                { Console.WriteLine("V"); }
-                else
-                { Console.WriteLine("X"); }
+                    userInputArray[0].Contains(color, StringComparison.OrdinalIgnoreCase));
 
-                //if all guesses are correct winner message will be provided
-                if (result1==0 && result2==0 && result3==0 && result4==0)
-                { Console.WriteLine("Congratulations, you have won");
-                    Console.ReadKey();
-                    break;
+
+                    if (!containsColor)
+                    {
+                        Console.WriteLine("Incorrect answer method, please provide 4 colors from the 5 mentioned options");
+                        continue;
+                    }
+
+                    bool containsColor1 = colors.Any(color =>
+
+                    userInputArray[1].Contains(color, StringComparison.OrdinalIgnoreCase));
+                    if (!containsColor1)
+                    {
+                        Console.WriteLine("Incorrect answer method, please provide 4 colors from the 5 mentioned options");
+                        continue;
+                    }
+
+                    bool containsColor2 = colors.Any(color =>
+                    userInputArray[2].Contains(color, StringComparison.OrdinalIgnoreCase));
+                    if (!containsColor2)
+                    {
+                        Console.WriteLine("Incorrect answer method, please provide 4 colors from the 5 mentioned options");
+                        continue;
+                    }
+
+                    bool ContainsColor3 = colors.Any(color =>
+                    userInputArray[3].Contains(color, StringComparison.OrdinalIgnoreCase));
+                    if (!ContainsColor3)
+                    {
+                        Console.WriteLine("Incorrect answer method, please provide 4 colors from the 5 mentioned options");
+                        continue;
+                    }
+
+                    if (ContainsColor3 == true)
+                        inputOkay = true;
                 }
+                
+                    Console.WriteLine($"Your guess: {userInputArray[0]}, {userInputArray[1]}, {userInputArray[2]}, {userInputArray[3]}");
 
-                counter++;
+
+                    //compare the user input with the codeArray and print V for correct and X for incorrect
+                    int result1 = string.Compare(codeArray[0], userInputArray[0], true);
+                    int result2 = string.Compare(codeArray[1], userInputArray[1], true);
+                    int result3 = string.Compare(codeArray[2], userInputArray[2], true);
+                    int result4 = string.Compare(codeArray[3], userInputArray[3], true);
+
+                    if (result1 == 0)
+                    { Console.Write("V "); }
+                    else
+                    { Console.Write("X "); }
+                    if (result2 == 0)
+                    { Console.Write("V "); }
+                    else
+                    { Console.Write("X "); }
+                    if (result3 == 0)
+                    { Console.Write("V "); }
+                    else
+                    { Console.Write("X "); }
+                    if (result4 == 0)
+                    { Console.WriteLine("V "); }
+                    else
+                    { Console.WriteLine("X "); }
+
+                    //if all guesses are correct winner message will be provided
+                    if (result1 == 0 && result2 == 0 && result3 == 0 && result4 == 0)
+                    {
+                        Console.WriteLine("Congratulations, you have won");
+                        Console.ReadKey();
+                        break;
+                    }
+
+                    counter++;
+                
         
             }
             //if all 10 attempts have been used lost message will be given
@@ -86,5 +145,4 @@ namespace GameMenu
             }
 
         }
-    }
-}
+   
