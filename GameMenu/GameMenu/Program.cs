@@ -1,12 +1,11 @@
-﻿namespace ChessGame
+﻿namespace GameMenu
 {
     internal class Program
     {
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-            
+   
             int[,] multiArray = new int[8, 8];
 
             for (int col = 0; col < 8; col++)
@@ -65,6 +64,7 @@
                     Console.WriteLine("Red's turn\n");
                 }
 
+                //Board being created
                 for (int row = 0; row < multiArray.GetLength(0); row++)
                 {
                     Console.Write((8 - row) + " ");
@@ -89,7 +89,7 @@
                             Console.ForegroundColor = ConsoleColor.Red;
                         }
 
-                        //Grønne brikker
+                        //Green getting their pieces
                         if (multiArray[row, col] == 1)
                         {
                             Console.Write("♙ ");
@@ -114,7 +114,7 @@
                         {
                             Console.Write("♔ ");
                         }
-                        //Røde brikker
+                        //Red getting their pieces
                         else if (multiArray[row, col] == 7)
                         {
                             Console.Write("♙ ");
