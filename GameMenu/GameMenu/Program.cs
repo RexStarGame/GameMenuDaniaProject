@@ -5,46 +5,34 @@
         static void Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
-            MineSweeper.Play(args);
+            PlayMineSweeper(args);
         }
 
-        private static class MineSweeper
+        /// <summary>
+        /// Mine Sweeper tile values.
+        /// </summary>
+        enum MsValues
         {
-            private static int _bombCount = 40;
+            HiddenSafe = 0,
+            Safe = 1,
+            FlagHiddenSafe = 2,
+            HiddenBomb = 3,
+            FlagHiddenBomb = 4
+        };
+        // MINESWEEPER BELLOW --------------------------------------------------------
+        private static void PlayMineSweeper(string[] args)
+        {
+            const int bombCount = 40;
+            string[] emojiList = {"⬛","⬜","🚩","💣"};
+            const int gridSize = 15;
+            Random random = new Random();
+            MsValues[,] grid = GenerateGameBoard();
+            GenerateBombs(grid);
+            DrawGrid();
+            RequestInput();
 
-            public enum Values
+            void RequestInput()
             {
-                HiddenSafe = 0,
-                Safe = 1,
-                FlagHiddenSafe = 2,
-                HiddenBomb = 3,
-                FlagHiddenBomb = 4
-            };
-
-            public static string[] emojiList = {"⬛","⬜","🚩","💣"};
-            
-            /// <summary>
-            /// The size of the 1:1 grid.
-            /// </summary>
-            private static int _gridSize = 15;
-            /// <summary>
-            /// The grid contents.
-            /// </summary>
-            private static Values[,] _grid = { };
-            /// <summary>
-            /// Start the game. Minesweeper.
-            /// </summary>
-            public static void Play(string[] args)
-            {
-                _grid = GenerateGameBoard();
-                GenerateBombs(_grid);
-                DrawGrid();
-                RequestInput();
-            }
-
-            public static void RequestInput()
-            {
-                
                 Console.WriteLine("Choose a tile..");
                 
                 Console.Write("X = ");
@@ -65,30 +53,30 @@
                 
             }
 
-            private static Values[,] GenerateGameBoard()
+            MsValues[,] GenerateGameBoard()
             {
-                Values[,] newBoard = GenerateGrid();
+                MsValues[,] newBoard = GenerateGrid();
                 return newBoard;
             }
             /// <summary>
             /// Generate the gameboard.
             /// </summary>
-            private static Values[,] GenerateGrid()
+            MsValues[,] GenerateGrid()
             {
-                Values[,] newGrid = new Values[_gridSize,_gridSize];
+                MsValues[,] newGrid = new MsValues[gridSize,gridSize];
                 Console.WriteLine("Generated grid.");
                 return newGrid;
             }
 
-            private static void GenerateBombs(Values[,] inputGrid)
+            void GenerateBombs(MsValues[,] inputGrid)
             {
-                for (int b = 0; b < _bombCount;)
+                for (int b = 0; b < bombCount;)
                 {
                     int[] tileCoord = PickRandomTile();
-                    Values tileValue = GetTileValue(tileCoord);
-                    if (tileValue == Values.HiddenSafe) ;
+                    MsValues tileValue = GetTileValue(tileCoord);
+                    if (tileValue == MsValues.HiddenSafe) ;
                     {
-                        SetTileValue(tileCoord,Values.HiddenBomb);
+                        SetTileValue(tileCoord,MsValues.HiddenBomb);
                         b++;
                     }
                         
@@ -96,11 +84,10 @@
                 Console.WriteLine("Generated bombs.");
             }
 
-            private static int[] PickRandomTile()
+            int[] PickRandomTile()
             {
-                Random r = new Random();
-                int x = r.Next(0, _gridSize);
-                int y = r.Next(0, _gridSize);
+                int x = random.Next(0, gridSize);
+                int y = random.Next(0, gridSize);
                 return new int[] {x, y}; //Coordinate
 
             }
@@ -109,7 +96,7 @@
             /// <summary>
             /// Do a check on a selected tile.
             /// </summary>
-            public static void CheckTile(int[,] coord)
+            void CheckTile(int[,] coord)
             {
                 
             }
@@ -119,65 +106,65 @@
             /// <param name="x"></param>
             /// <param name="y"></param>
             /// <param name="add"></param> if true; add, else remove.
-            public static void FlagTile(int[] coord)
+            void FlagTile(int[] coord)
             {
-                Values tileValue = GetTileValue(coord);
-                if (tileValue == Values.Safe)
+                MsValues tileValue = GetTileValue(coord);
+                if (tileValue == MsValues.Safe)
                 {
                     return;
                 }
-                if (tileValue == Values.HiddenBomb) 
+                if (tileValue == MsValues.HiddenBomb) 
                 {
-                    SetTileValue(coord,Values.FlagHiddenBomb);
+                    SetTileValue(coord,MsValues.FlagHiddenBomb);
                 }
-                else if (tileValue == Values.FlagHiddenBomb) 
+                else if (tileValue == MsValues.FlagHiddenBomb) 
                 {
-                    SetTileValue(coord,Values.HiddenBomb);
+                    SetTileValue(coord,MsValues.HiddenBomb);
                 }
-                else if (tileValue == Values.HiddenSafe) 
+                else if (tileValue == MsValues.HiddenSafe)
                 {
-                    SetTileValue(coord,Values.FlagHiddenSafe);
+                    SetTileValue(coord, MsValues.FlagHiddenSafe);
                 }
-                else if (tileValue == Values.FlagHiddenSafe) 
+                else if (tileValue == MsValues.FlagHiddenSafe) 
                 {
-                    SetTileValue(coord,Values.HiddenSafe);
+                    SetTileValue(coord,MsValues.HiddenSafe);
                 }
             }
 
-            private static Values GetTileValue(int[] coord)
+            MsValues GetTileValue(int[] coord)
             {
-                return _grid[coord[0],coord[1]];
+                return grid[coord[0],coord[1]];
             }
             
-            private static void SetTileValue(int[] coord, Values newValue)
+            void SetTileValue(int[] coord, MsValues newValue)
             {
-                _grid[coord[0],coord[1]] = newValue;
+                grid[coord[0],coord[1]] = newValue;
             }
             
-            public static bool IsTileHidden(Values[,] coord)
+            bool IsTileHidden(int[] coord)
             {
-                return true;
+                return GetTileValue(coord) != MsValues.Safe;
             }
 
-            public static bool IsTileFlagged(int[,] coord)
+            bool IsTileFlagged(int[] coord)
             {
-                return true;
+                return GetTileValue(coord) == MsValues.FlagHiddenBomb || GetTileValue(coord) == MsValues.FlagHiddenSafe;
             }
 
-            public static void GameOver()
+            void GameOver()
             {
                 Console.WriteLine("YOU LOSE! :(");
             }
 
-            public static void GameWin()
+            void GameWin()
             {
                 Console.WriteLine("YOU WIN!");
             }
 
-            private static void DrawGrid()
+            void DrawGrid()
             {
-                int rows = _grid.GetLength(0);
-                int columns = _grid.GetLength(1);
+                int rows = grid.GetLength(0);
+                int columns = grid.GetLength(1);
                 // Column headers
                 Console.Write("  ");
                 for (int c = 0; c < columns; c++)
@@ -186,29 +173,29 @@
                 }
 
                 Console.WriteLine();
-                for (int x = 0; x < _grid.GetLength(0); x++)
+                for (int x = 0; x < grid.GetLength(0); x++)
                 {
                     // Row headers
                     Console.Write($"{x,3}");
-                    for (int y = 0; y < _grid.GetLength(1); y++)
+                    for (int y = 0; y < grid.GetLength(1); y++)
                     {
                         string toWrite = "";
-                        Values value = _grid[x, y];
+                        MsValues value = grid[x, y];
                         switch(value)
                         {
-                            case Values.HiddenSafe:
+                            case MsValues.HiddenSafe:
                                 toWrite = emojiList[0];
                                 break;
-                            case Values.Safe:
+                            case MsValues.Safe:
                                 toWrite = emojiList[1];
                                 break;
-                            case Values.FlagHiddenSafe:
+                            case MsValues.FlagHiddenSafe:
                                 toWrite = emojiList[2];
                                 break;
-                            case Values.HiddenBomb:
+                            case MsValues.HiddenBomb:
                                 toWrite = emojiList[0];
                                 break;
-                            case Values.FlagHiddenBomb:
+                            case MsValues.FlagHiddenBomb:
                                 toWrite = emojiList[2];
                                 break;
                         }
@@ -217,6 +204,11 @@
 
                     Console.WriteLine();
                 }
+            }
+
+            string GetSafeTileSprite()
+            {
+                
             }
         }
     }
