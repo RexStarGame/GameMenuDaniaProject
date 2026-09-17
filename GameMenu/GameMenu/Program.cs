@@ -138,9 +138,20 @@ static void MainMastermind()
         //if all guesses are correct winner message will be provided
         if (result1 == 0 && result2 == 0 && result3 == 0 && result4 == 0)
         {
-            Console.WriteLine("Congratulations, you have won");
-            Console.ReadKey();
-            break;
+            Console.WriteLine("Congratulations, you have won \nPress ESC to GAME MENU \nENTER to retry");
+            
+            ConsoleKeyInfo menuSelect = Console.ReadKey(true);
+
+            if (menuSelect.Key == ConsoleKey.Escape)
+            {
+                Console.Clear();
+                Main();
+            }
+            else if (menuSelect.Key==ConsoleKey.Enter)
+            {
+                Console.Clear();
+                MainMastermind();
+            }
         }
 
         counter++;
