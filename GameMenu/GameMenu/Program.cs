@@ -126,6 +126,7 @@
                     break;
                 case MsValues.HiddenSafe:
                     SetTileValue(coord,MsValues.Safe);
+                    RevealSafeNeighbors(coord);
                     break;
                 }
 
@@ -289,6 +290,48 @@
             bool isTileBomb(int[] coord)
             {
                 return grid[coord[0],coord[1]] == MsValues.HiddenBomb || grid[coord[0],coord[1]] == MsValues.FlagHiddenBomb;
+            }
+            
+            // Reveals all neighbors with 0 nearby bombs, as well as the 8 adjacent tiles.
+            void RevealSafeNeighbors(int[] coord)
+            {
+                int row = coord[0];
+                int column = coord[1]; 
+
+                for (int rowOffset = -1; rowOffset <= 1; rowOffset++) // goes along the row
+                {
+                    for (int columnOffset = -1; columnOffset <= 1; columnOffset++) // goes along the column
+                    {
+                        if (rowOffset == 0 && columnOffset == 0) // this would be the coord tile, so skip.
+                        {
+                            continue; 
+                        }
+                        int nearbyRow = row + rowOffset;
+                        int nearbyColumn = column + columnOffset;
+                        
+                        if (nearbyRow < 0 || nearbyRow >= grid.GetLength(0) || nearbyColumn < 0 || nearbyColumn >= grid.GetLength(1))
+                        {
+                            continue; // skip if out of bounds
+                        }
+                        
+                        int[] nearbyCoord = {nearbyRow, nearbyColumn};
+                        
+                        // Skip flags and bombs
+                        if (GetTileValue(nearbyCoord) != MsValues.HiddenSafe)
+                        {
+                            continue;
+                        }
+                        // Reveal every adjacent safe tile, including numbered tiles.
+                        SetTileValue(nearbyCoord, MsValues.Safe);
+
+                        // Continue spreading only through non-bomb tiles.
+                        if (GetNearbyBombCount(nearbyCoord) == 0)
+                        {
+                            RevealSafeNeighbors(nearbyCoord);
+                        }
+
+                    }
+                }
             }
         }
     }
