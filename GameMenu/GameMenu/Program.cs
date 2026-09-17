@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.Design;
+
 Main();
         static void Main()
         {
@@ -15,6 +17,11 @@ Main();
     {
         Console.Clear();
         Chess();
+    }
+    else if (menuSelect.Key == ConsoleKey.D3)
+    {
+        Console.Clear();
+        SnakeGameRamme();
     }
 
     else if (menuSelect.Key==ConsoleKey.D4)
@@ -428,12 +435,254 @@ static void Chess()
     }
 }
 
+/// <SnakeGame>
+/// et spil hvor du styr en slange og skal forsøge at vokse sig stor uden at dø....
+/// <SnakeGame>
+static void SnakeGameRamme()
+{
+    Console.OutputEncoding = System.Text.Encoding.UTF8; //Allow the console to use unicode emojis/symboler, but i did not manage to find away to fix the following issues for this yet.
+    Console.CursorVisible = false; // hides the arrow that shows where you tpye next. (hard to discibe what this dose) 
+
+    string[,] stringArray = new string[30, 40];
+
+    int lastRowY = stringArray.GetUpperBound(0); // sidste gyldige indext som i kan få
+    int lastColumnX = stringArray.GetUpperBound(1); // sidste gyldige indext som j kan få
+
+    for (int i = 0; i < stringArray.GetLength(0); i++)
+    {
+        for (int j = 0; j < stringArray.GetLength(1); j++)
+        {
+            if (i == 0 || j == 0 || i == lastRowY || j == lastColumnX) // øverst i højre eller øverst venstre kollone væg, eller neders bundt.
+            {
+                stringArray[i, j] = "#"; // vægsymboler.
+            }
+            else
+            {
+                stringArray[i, j] = " "; // tom plads.
+
+            }
+            Console.Write(stringArray[i, j]);
+        }
+        Console.WriteLine();
+    }
+
+    SnakeBody('■', '@', stringArray, true, lastRowY, lastColumnX); // call SnakeBody().
+
+    static void SnakeBody(char snakeTail, char snakeHead, string[,] stringArray, bool isAktiv, int lastRowY, int lastColumnX)
+    {
+        char keyboard = 's';
+
+        int snakeX = 10; // current X posision of the snake in stringArray[row, col]. this is col
+        int snakeY = 10; // current Y posision of the snake in stringArray[row, col]. this is row
+
+        int snakeoldPossionX;
+        int snakeoldPossionY; // old Y pasision of snakeHead, used to transfrom the old head position into (snakeTail)
+
+        int[] snakeTailPositionsX = new int[100];
+        int[] snakeTailPositionsY = new int[100]; // snakeTail max 100 tail parts, 0-99 index. 
 
 
+        bool[] maxAppleSpawn = new bool[3];
+        bool playerEateApple = false; // spilleren har ikke spidst lige pt :) 
+        bool applePosisionisFree = false; // checks if Apples posision is free or orgipaid.
+        bool playerAlive = true; // spilleren starter med at være ilive. 
+
+        Random appleRandomLocation = new Random();
 
 
+        int[] appleLocationX = new int[3];
+        int[] appleLocationY = new int[3];
 
+        int currentApple = 0;
 
+        int snakeLength = 2;
+
+        stringArray[snakeY, snakeX] = snakeHead.ToString();
+
+        snakeTailPositionsY[0] = snakeY - 1;
+        snakeTailPositionsX[0] = snakeX;
+        while (!Console.KeyAvailable)
+        {
+            Thread.Sleep(800); // fortæller computuren at skal hole en pause i 800 mili sec før den læser videre.
+            Console.SetCursorPosition(3, 10);
+            Console.Write("tyk på noget for at starte\n   spillet"); // show text
+            Thread.Sleep(800); // pause 800 mili sec
+            Console.SetCursorPosition(3, 10);
+            Console.Write("                          \n          "); // removes the old text.
+        }
+
+        ConsoleKeyInfo keyTouch = Console.ReadKey(true); // ved godt det ikke er optimalt måde at gøre det på jeg bruger den til at lave et pause er du klar? da vi aligevel skal bruge dette KeyTouch senere i koden.
+
+        while (isAktiv)
+        {
+            playerEateApple = false; // i starten af frame siger vi at spilleren ikke har spidst og ændres kun vis den spiser et æble selv i starten af dette frame.
+            if (Console.KeyAvailable)
+            {
+                keyboard = Console.ReadKey(true).KeyChar; // only read inputs if any key is available. 
+            }
+            snakeoldPossionY = snakeY;
+            snakeoldPossionX = snakeX;
+
+            Thread.Sleep(250);
+
+            int tailEdgeY = snakeTailPositionsY[snakeLength - 2]; // enden af halen Y
+            int tailEdgeX = snakeTailPositionsX[snakeLength - 2]; // enden af halen X
+
+            stringArray[snakeoldPossionY, snakeoldPossionX] = snakeTail.ToString();
+            Console.SetCursorPosition(snakeoldPossionX, snakeoldPossionY);
+            Console.Write(snakeTail);
+
+            switch (keyboard)
+            {
+                case 'a':
+
+                    snakeX--; // moving to the left by 1 int/posision on every frame/tick
+
+                    break;
+
+                case 'd':
+
+                    snakeX++; // right
+
+                    break;
+
+                case 'w':
+
+                    snakeY--; // up
+
+                    break;
+
+                case 's':
+
+                    snakeY++; // down 
+
+                    break;
+            }
+           
+
+            if (snakeX >= lastColumnX || snakeY >= lastRowY || snakeY <= 0 || snakeX <= 0) // checks if player colides with the wall and dies :) 
+            {
+                playerAlive = false; // spilleren er død
+            }
+            for (int h = 0; h < snakeLength - 1; h++) // check every tail parts in SnakeLength
+            {
+                if (snakeX == snakeTailPositionsX[h] && snakeY == snakeTailPositionsY[h]) // checks if snakeHead collides with our snakeTail.
+                {
+                    playerAlive = false;
+                }
+            }
+            if(!playerAlive) // ser om spilleren er ilive eller ej.
+            {
+                Console.WriteLine(
+                    "    du døde tyk på (Enter) vis du ønsker at\n " +
+                    "    prøve spillet igen \n " +
+                    "    tyk på EXC for at gå til menu");
+                keyTouch = Console.ReadKey();
+                while(keyTouch.Key != ConsoleKey.Enter && keyTouch.Key != ConsoleKey.Escape)
+                {
+                    keyTouch = Console.ReadKey(true);         
+                }
+                if (keyTouch.Key == ConsoleKey.Enter)
+                {
+                    isAktiv = false;
+                    Console.Clear();
+                    SnakeGameRamme(); // Spillet starter igen.
+                    return; // skal siges return torede jeg ikke kunne bruges i et void xD men jeg tog fejl xD
+                }
+                else if (keyTouch.Key == ConsoleKey.Escape)
+                {
+                    isAktiv = false;
+                    Console.Clear();
+                    Main(); // går tilbage til menu. oggså selvom (return) ville gå til SnakeGameRamme() xD
+                    return; // stopper SnakeBody() med det samme og går tilbage til den der kaldte SnakeBody() xD ikke main() xD.
+                }
+            }
+
+            Console.SetCursorPosition(snakeX, snakeY);
+            Console.Write(snakeHead);
+
+            for (int s = 0; s < maxAppleSpawn.Length; s++)
+            {
+
+                if (appleLocationY[s] == snakeY && appleLocationX[s] == snakeX && maxAppleSpawn[s] == true) // if snakehead reaches an apple location
+                {
+                    snakeLength++;
+                    stringArray[appleLocationY[s], appleLocationX[s]] = " ";
+                    playerEateApple = true; // player has eaten the apple
+                    currentApple++; // adds 1+ for each apple player has eaten. 
+                    maxAppleSpawn[s] = false;
+                    continue;
+                }
+                if (maxAppleSpawn[s] == false)
+                {
+                    applePosisionisFree = false;
+
+                    while (applePosisionisFree == false) // bruges til at sikker at vi aldrig spawner et andet æble aller hale eller hovedet af slangen i samme location.
+                    {
+                        appleLocationY[s] = appleRandomLocation.Next(5, lastRowY); // creating a new random location for our next apple.
+                        appleLocationX[s] = appleRandomLocation.Next(5, lastColumnX);
+
+                        applePosisionisFree = true;
+
+                        for (int h = 0; h < snakeLength - 1; h++) // checks if the new apple spawns on the snake head
+                        {
+                            if (appleLocationX[s] == snakeTailPositionsX[h] && appleLocationY[s] == snakeTailPositionsY[h])
+                            {
+                                applePosisionisFree = false;
+                            }
+                        }
+
+                        if (appleLocationX[s] == snakeX && appleLocationY[s] == snakeY) // checks if the new apple spawns on the snake head
+                        {
+                            applePosisionisFree = false;
+                        }
+                        for (int w = 0; w < maxAppleSpawn.Length; w++) // checks if the new apple spawns on top of another active apple
+                        {
+                            if (w != s && maxAppleSpawn[w] == true)
+                            {
+                                if (appleLocationX[s] == appleLocationX[w] && appleLocationY[s] == appleLocationY[w])
+                                {
+                                    applePosisionisFree = false;
+                                }
+                            }
+                        }
+                    }
+                    stringArray[appleLocationY[s], appleLocationX[s]] = "●"; // food/apple
+                    Console.SetCursorPosition(appleLocationX[s], appleLocationY[s]);
+                    Console.Write("●");
+                    maxAppleSpawn[s] = true;
+                    continue;
+                }
+            }
+
+            if (snakeLength < snakeTailPositionsX.Length && snakeLength < snakeTailPositionsY.Length)
+            {
+                for (int a = snakeLength - 2; a > 0; a--)
+                {
+                    snakeTailPositionsX[a] = snakeTailPositionsX[a - 1];
+                    snakeTailPositionsY[a] = snakeTailPositionsY[a - 1];
+                }
+                snakeTailPositionsX[0] = snakeoldPossionX;
+                snakeTailPositionsY[0] = snakeoldPossionY;
+                stringArray[snakeY, snakeX] = snakeHead.ToString();
+                Console.SetCursorPosition(snakeX, snakeY);
+                Console.Write(snakeHead);
+
+                if (tailEdgeY != 0 && tailEdgeX != 0 && playerEateApple == false) // if not player have eaten the apple and our tail posision is not = 0 then continue.
+                {
+                    stringArray[tailEdgeY, tailEdgeX] = " "; // remove old tails posision from stringArray
+                    Console.SetCursorPosition(tailEdgeX, tailEdgeY); // set possion to our cursor to be our old tails posision. 
+                    Console.Write(" "); // remove old tail visualt so you no longer can see it. 
+                }
+
+                Console.SetCursorPosition(42, 2); // vælger en spesisfic plasering til at vise længten live for spilleren. 
+                Console.Write($" slangens længte {snakeLength}");
+                Console.SetCursorPosition(42, 3); // vælger en spesisfic plasering til at vise antal æbler live for spilleren. 
+                Console.Write($"antal æbler spist {currentApple}");
+            }
+        }
+    }
+}
 
 /// <summary>
 /// Mine Sweeper tile values.
