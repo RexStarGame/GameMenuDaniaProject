@@ -138,8 +138,8 @@ static void MainMastermind()
         //if all guesses are correct winner message will be provided
         if (result1 == 0 && result2 == 0 && result3 == 0 && result4 == 0)
         {
-            Console.WriteLine("Congratulations, you have won \nPress ESC to GAME MENU \nENTER to retry");
-            
+            Console.WriteLine("Congratulations, you have won \nPress ESC to GAME MENU \nPress ENTER to try again");
+
             ConsoleKeyInfo menuSelect = Console.ReadKey(true);
 
             if (menuSelect.Key == ConsoleKey.Escape)
@@ -152,20 +152,31 @@ static void MainMastermind()
                 Console.Clear();
                 MainMastermind();
             }
+
         }
 
         counter++;
 
-
     }
     //if all 10 attempts have been used lost message will be given
-    if (counter == 9)
+    if (counter >= 9)
     {
-        Console.WriteLine("Sorry you have lost");
-    }
-    else
-    {
-        Console.ReadKey();
-    }
+        Console.WriteLine("Sorry you have lost \nPress ESC to GAME MENU \nPress ENTER to try again");
+        ConsoleKeyInfo menuSelect = Console.ReadKey(true);
 
+        if (menuSelect.Key == ConsoleKey.Escape)
+        {
+            Console.Clear();
+            Main();
+        }
+        else if (menuSelect.Key == ConsoleKey.Enter)
+        {
+            Console.Clear();
+            MainMastermind();
+        }
+    }
 }
+    
+  
+       
+    
