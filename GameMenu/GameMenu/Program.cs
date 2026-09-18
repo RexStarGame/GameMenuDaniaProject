@@ -686,11 +686,11 @@ static void SnakeGameRamme()
 
 
 // MINESWEEPER BELLOW --------------------------------------------------------
-void PlayMineSweeper(string[] args)
+static void PlayMineSweeper()
 {
     bool isGameOver = false;
     const int gridSize = 9; // how big is the 1:1 grid
-    const int bombCount = 1; // how many bombs
+    const int bombCount = 10; // how many bombs
     const ConsoleColor headerColour = ConsoleColor.Yellow;
     int remainingBombs = bombCount;
     int remainingHiddenSafe = (gridSize*gridSize-bombCount);
