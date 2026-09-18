@@ -213,61 +213,68 @@ static void Chess()
 
     for (int col = 0; col < 8; col++)
     {
-        //Grønne bønder
+        //Green Pawns
         multiArray[1, col] = 1;
     }
-    //Grønne tårne
+    //Green Rooks
     multiArray[0, 0] = 2;
     multiArray[0, 7] = 2;
-    //Grønne springere
+    //Green Knights
     multiArray[0, 1] = 3;
     multiArray[0, 6] = 3;
-    //Grønne løbere
+    //Green Bishops
     multiArray[0, 2] = 4;
     multiArray[0, 5] = 4;
-    //Grøn konge
+    //Green King
     multiArray[0, 3] = 5;
-    //Grøn dronning
+    //Green Queen
     multiArray[0, 4] = 6;
 
     for (int col = 0; col < 8; col++)
     {
-        //Røde bønder
+        //Red Pawns
         multiArray[6, col] = 7;
     }
-    //Røde tårne
+    //Red Rooks
     multiArray[7, 0] = 8;
     multiArray[7, 7] = 8;
-    //Røde springere
+    //Red Knights
     multiArray[7, 6] = 9;
     multiArray[7, 1] = 9;
-    //Røde løbere
+    //Red Bishops
     multiArray[7, 5] = 10;
     multiArray[7, 2] = 10;
-    //Rød konge
+    //Red King
     multiArray[7, 3] = 11;
-    //Rød dronning
+    //Red Queen
     multiArray[7, 4] = 12;
 
-    bool whiteTurn = true;
+    bool greenTurn = true;
     bool gameOver = false;
+    string lastMove = "";
 
     while (!gameOver)
     {
         Console.Clear();
 
-        Console.WriteLine("Chess\n");
+        Console.WriteLine(@"  ____ _                   ");
+        Console.WriteLine(@" / ___| |__   ___  ___ ___ ");
+        Console.WriteLine(@"| |   | '_ \ / _ \/ __/ __|");
+        Console.WriteLine(@"| |___| | | |  __/\__ \__ \");
+        Console.WriteLine(@" \____|_| |_|\___||___/___/");
 
-        if (whiteTurn)
+        Console.WriteLine("\nPlease type a letter from A - H followed by a number from 1 - 8");
+
+        if (greenTurn)
         {
-            Console.WriteLine("Green's turn\n");
+            Console.WriteLine("\nTurn: Green\n");
         }
         else
         {
-            Console.WriteLine("Red's turn\n");
+            Console.WriteLine("\nTurn: Red\n");
         }
 
-        //Chess board being created
+        //Drawing Chessboard
         for (int row = 0; row < multiArray.GetLength(0); row++)
         {
             Console.Write((8 - row) + " ");
@@ -282,11 +289,12 @@ static void Chess()
                 {
                     Console.BackgroundColor = ConsoleColor.White;
                 }
-
+                //Colors for Green
                 if (multiArray[row, col] >= 1 && multiArray[row, col] <= 6)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                 }
+                //Colors for Red
                 else if (multiArray[row, col] >= 7 && multiArray[row, col] <= 12)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -357,12 +365,52 @@ static void Chess()
         {
             Console.Write(col + " ");
         }
-        Console.WriteLine();
-        Console.Write("\nFrom: ");
-        string from = Console.ReadLine() ?? "";
+        Console.WriteLine("\n" + lastMove);
 
-        Console.Write("To: ");
-        string to = Console.ReadLine() ?? "";
+        string from = "";
+        string to = "";
+
+        //Accepted inputs for "From"
+        while (true)
+        {
+            Console.Write("From: ");
+            from = Console.ReadLine() ?? "";
+
+            if (from.Length != 2)
+            {
+                Console.WriteLine("Wrong input");
+                continue;
+            }
+
+            if (!"ABCDEFGH".Contains(from[0]) || !"12345678".Contains(from[1]))
+            {
+                Console.WriteLine("Wrong input");
+                continue;
+            }
+
+            break;
+        }
+
+        //Accepted inputs for "To"
+        while (true)
+        {
+            Console.Write("To: ");
+            to = Console.ReadLine() ?? "";
+
+            if (to.Length != 2)
+            {
+                Console.WriteLine("Wrong input");
+                continue;
+            }
+
+            if (!"ABCDEFGH".Contains(to[0]) || !"12345678".Contains(to[1]))
+            {
+                Console.WriteLine("Wrong input");
+                continue;
+            }
+
+            break;
+        }
 
         char fromCol = from[0];
         char fromRow = from[1];
@@ -379,9 +427,10 @@ static void Chess()
         int piece = multiArray[fromRowNum, fromColNum];
         int targetPiece = multiArray[toRowNum, toColNum];
 
-        if (targetPiece == 11 && whiteTurn)
+        //If Green wins Chess
+        if (targetPiece == 11 && greenTurn)
         {
-            Console.WriteLine("\nGreen wins!\nPress ESC to GAME MENU \nPress ENTER to try again");
+            Console.WriteLine("\nGreen wins!\n" + "\nPress ESC to GAME MENU\nPress ENTER to try again");
             gameOver = true;
             ConsoleKeyInfo menuSelect = Console.ReadKey(true);
 
@@ -396,9 +445,10 @@ static void Chess()
                 Chess();
             }
         }
-        else if (targetPiece == 5 && !whiteTurn)
+        //If Red wins Chess
+        else if (targetPiece == 5 && !greenTurn)
         {
-            Console.WriteLine("\nRed wins!\nPress ESC to GAME MENU \nPress ENTER to try again");
+            Console.WriteLine("\nRed wins!\n" + "\nPress ESC to GAME MENU\nPress ENTER to try again");
             gameOver = true;
             ConsoleKeyInfo menuSelect = Console.ReadKey(true);
 
@@ -419,6 +469,7 @@ static void Chess()
             break;
         }
 
+        //Non accepted choices for moving a piece
         if (piece == 0)
         {
             Console.WriteLine("There is no piece on this position");
@@ -428,9 +479,17 @@ static void Chess()
 
         multiArray[toRowNum, toColNum] = piece;
         multiArray[fromRowNum, fromColNum] = 0;
-        whiteTurn = !whiteTurn;
+        greenTurn = !greenTurn;
 
-        Console.WriteLine("You have moved from " + from + " to " + to);
+        //Players moves
+        if (!greenTurn)
+        {
+            lastMove = ("\nGreen moved from " + from + " to " + to);
+        }
+        else
+        {
+            lastMove = ("\nRed moved from " + from + " to " + to);
+        }
     }
 }
 
