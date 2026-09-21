@@ -38,7 +38,7 @@ static void MainMastermind()
     string[] codeArray = new string[4];
 
     //string library of colors to choose from
-    string[] colors = { "Red", "Green", "Blue", "Yellow", "White" };
+    string[] colors = { "Red", "Green", "Blue", "Yellow", "White", "Pink" };
 
     //array to store user input
     string[] userInputArray = new string[4];
@@ -49,20 +49,23 @@ static void MainMastermind()
         codeArray.SetValue(colors[new Random().Next(colors.Length)], i);
     }
 
-    Console.WriteLine($"{codeArray[0]} {codeArray[1]} {codeArray[2]} {codeArray[3]}");
+    //to write out gererated secret code during creation of game
+   // Console.WriteLine($"{codeArray[0]} {codeArray[1]} {codeArray[2]} {codeArray[3]}");
 
     //start message to user
     Console.WriteLine("Welcome to MasterMind!");
     Console.WriteLine("The rules are simple: You have to guess the correct color code of 4 colors in 10 tries.");
-    Console.WriteLine("You have 5 colors to choose from: Red, Green, Blue, Yellow and White");
+    Console.WriteLine("You have 6 colors to choose from: Red, Green, Blue, Yellow, White and Pink");
     Console.WriteLine("Please provide the color code in the following manner for instance: Red,Green,Blue,Yellow");
 
+    //int counter for number of tries and counter for tries left
     int counter = 0;
+    int countDownM = 10;
 
-    //loop checking player input until all true or trials reach 10
+    //loop checking player input until all true or number of trials reach 10
     while (counter < 10)
     {
-
+        //loop who checks input from user, so spelling mistakes or missing a color does not count in number of tries
         bool inputOkay = false;
 
         while (inputOkay == false)
@@ -76,7 +79,7 @@ static void MainMastermind()
                 Console.WriteLine("Please provide input");
                 continue;
             }
-            //split input by , into userInputArray
+            //split input by "," into userInputArray
             userInputArray = userInput.Split(',');
 
             //check if all 4 places in array has been given value
@@ -94,7 +97,7 @@ static void MainMastermind()
 
             if (!containsColor)
             {
-                Console.WriteLine("Incorrect answer method, please provide 4 colors from the 5 mentioned options");
+                Console.WriteLine("Incorrect answer method, please provide 4 colors from the 6 mentioned options");
                 continue;
             }
 
@@ -103,7 +106,7 @@ static void MainMastermind()
             userInputArray[1].Contains(color, StringComparison.OrdinalIgnoreCase));
             if (!containsColor1)
             {
-                Console.WriteLine("Incorrect answer method, please provide 4 colors from the 5 mentioned options");
+                Console.WriteLine("Incorrect answer method, please provide 4 colors from the 6 mentioned options");
                 continue;
             }
 
@@ -111,7 +114,7 @@ static void MainMastermind()
             userInputArray[2].Contains(color, StringComparison.OrdinalIgnoreCase));
             if (!containsColor2)
             {
-                Console.WriteLine("Incorrect answer method, please provide 4 colors from the 5 mentioned options");
+                Console.WriteLine("Incorrect answer method, please provide 4 colors from the 6 mentioned options");
                 continue;
             }
 
@@ -119,7 +122,7 @@ static void MainMastermind()
             userInputArray[3].Contains(color, StringComparison.OrdinalIgnoreCase));
             if (!ContainsColor3)
             {
-                Console.WriteLine("Incorrect answer method, please provide 4 colors from the 5 mentioned options");
+                Console.WriteLine("Incorrect answer method, please provide 4 colors from the 6 mentioned options");
                 continue;
             }
 
@@ -174,6 +177,8 @@ static void MainMastermind()
         }
 
         counter++;
+        countDownM--;
+        Console.WriteLine($"Attempts left:{countDownM}");
 
 
     }
