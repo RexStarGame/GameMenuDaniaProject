@@ -220,39 +220,36 @@ static void Chess()
     {
         //Green Pawns
         multiArray[1, col] = 1;
-    }
-    //Green Rooks
-    multiArray[0, 0] = 2;
-    multiArray[0, 7] = 2;
-    //Green Knights
-    multiArray[0, 1] = 3;
-    multiArray[0, 6] = 3;
-    //Green Bishops
-    multiArray[0, 2] = 4;
-    multiArray[0, 5] = 4;
-    //Green King
-    multiArray[0, 3] = 5;
-    //Green Queen
-    multiArray[0, 4] = 6;
+        //Green Rooks
+        multiArray[0, 0] = 2;
+        multiArray[0, 7] = 2;
+        //Green Knights
+        multiArray[0, 1] = 3;
+        multiArray[0, 6] = 3;
+        //Green Bishops
+        multiArray[0, 2] = 4;
+        multiArray[0, 5] = 4;
+        //Green King
+        multiArray[0, 3] = 5;
+        //Green Queen
+        multiArray[0, 4] = 6;
 
-    for (int col = 0; col < 8; col++)
-    {
         //Red Pawns
         multiArray[6, col] = 7;
+        //Red Rooks
+        multiArray[7, 0] = 8;
+        multiArray[7, 7] = 8;
+        //Red Knights
+        multiArray[7, 6] = 9;
+        multiArray[7, 1] = 9;
+        //Red Bishops
+        multiArray[7, 5] = 10;
+        multiArray[7, 2] = 10;
+        //Red King
+        multiArray[7, 3] = 11;
+        //Red Queen
+        multiArray[7, 4] = 12;
     }
-    //Red Rooks
-    multiArray[7, 0] = 8;
-    multiArray[7, 7] = 8;
-    //Red Knights
-    multiArray[7, 6] = 9;
-    multiArray[7, 1] = 9;
-    //Red Bishops
-    multiArray[7, 5] = 10;
-    multiArray[7, 2] = 10;
-    //Red King
-    multiArray[7, 3] = 11;
-    //Red Queen
-    multiArray[7, 4] = 12;
 
     bool greenTurn = true;
     bool gameOver = false;
@@ -276,6 +273,7 @@ static void Chess()
         }
         else
         {
+
             Console.WriteLine("\nTurn: Red\n");
         }
 
@@ -305,7 +303,7 @@ static void Chess()
                     Console.ForegroundColor = ConsoleColor.Red;
                 }
 
-                //Green getting their pieces
+                //Green converts to pieces
                 if (multiArray[row, col] == 1)
                 {
                     Console.Write("♙ ");
@@ -330,7 +328,7 @@ static void Chess()
                 {
                     Console.Write("♔ ");
                 }
-                //Red getting their pieces
+                //Red converts to pieces
                 else if (multiArray[row, col] == 7)
                 {
                     Console.Write("♙ ");
@@ -372,8 +370,8 @@ static void Chess()
         }
         Console.WriteLine("\n" + lastMove);
 
-        string from = "";
-        string to = "";
+        string from;
+        string to;
 
         //Accepted inputs for "From"
         while (true)
@@ -417,20 +415,37 @@ static void Chess()
             break;
         }
 
+        //Converts "From" and "To" input from the player
         char fromCol = from[0];
         char fromRow = from[1];
 
         char toCol = to[0];
         char toRow = to[1];
 
+        //Converts chess coordinates (A-H and 1-8) to array indexes (0-7)
         int fromColNum = fromCol - 'A';
         int toColNum = toCol - 'A';
 
         int fromRowNum = 8 - (fromRow - '0');
         int toRowNum = 8 - (toRow - '0');
 
+        //Gets the piece at the starting position to check for a valid or invalid move
         int piece = multiArray[fromRowNum, fromColNum];
+
+        //Gets the piece at the destination to check if a King is captured
         int targetPiece = multiArray[toRowNum, toColNum];
+
+        //Checking if move is invalid
+        if (piece == 0)
+        {
+            Console.WriteLine("There is no piece on this position");
+            Console.ReadKey();
+            continue;
+        }
+
+        //Updates the board by moving the piece to the new position and clearing the old field
+        multiArray[toRowNum, toColNum] = piece;
+        multiArray[fromRowNum, fromColNum] = 0;
 
         //If Green wins Chess
         if (targetPiece == 11 && greenTurn)
@@ -474,19 +489,10 @@ static void Chess()
             break;
         }
 
-        //Non accepted choices for moving a piece
-        if (piece == 0)
-        {
-            Console.WriteLine("There is no piece on this position");
-            Console.ReadKey();
-            continue;
-        }
-
-        multiArray[toRowNum, toColNum] = piece;
-        multiArray[fromRowNum, fromColNum] = 0;
+        //Switches the turn to the other player
         greenTurn = !greenTurn;
 
-        //Players moves
+        //Player moves
         if (!greenTurn)
         {
             lastMove = ("\nGreen moved from " + from + " to " + to);
