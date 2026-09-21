@@ -10,23 +10,23 @@ Main();
     if (menuSelect.Key==ConsoleKey.D1)
     {
         Console.Clear();
-        MainMastermind();
+        MainMastermind(); // <- Isabella
     }
     else if (menuSelect.Key == ConsoleKey.D2)
     {
         Console.Clear();
-        Chess();
+        Chess();          // <- Kasper
     }
     else if (menuSelect.Key == ConsoleKey.D3)
     {
         Console.Clear();
-        SnakeGameRamme();
+        SnakeGameRamme(); // <- Patrick
     }
 
     else if (menuSelect.Key==ConsoleKey.D4)
     {
         Console.Clear();
-        PlayMineSweeper();
+        PlayMineSweeper(); // <- Laurids
     }
 
 
