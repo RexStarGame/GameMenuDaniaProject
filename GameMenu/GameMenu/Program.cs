@@ -997,8 +997,21 @@ static void PlayMineSweeper()
         Console.WriteLine("░████████     ░██████     ░██████     ░██████   ░███     ░███ ░██ \n░██    ░██   ░██   ░██   ░██   ░██   ░██   ░██  ░████   ░████ ░██ \n░██    ░██  ░██     ░██ ░██     ░██ ░██     ░██ ░██░██ ░██░██ ░██ \n░████████   ░██     ░██ ░██     ░██ ░██     ░██ ░██ ░████ ░██ ░██ \n░██     ░██ ░██     ░██ ░██     ░██ ░██     ░██ ░██  ░██  ░██ ░██ \n░██     ░██  ░██   ░██   ░██   ░██   ░██   ░██  ░██       ░██     \n░█████████    ░██████     ░██████     ░██████   ░██       ░██ ░██ \n                                                                  \n                                                                  \n                                                                  ");
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("Oops! That was a mine! YOU LOSE! :(");
-
+        Console.WriteLine("Press 'Esc' to return to menu, or 'Enter' to try again.");
+        
+        ConsoleKeyInfo menuSelect = Console.ReadKey(true);
         Console.ResetColor();
+        if (menuSelect.Key == ConsoleKey.Escape)
+        {
+            Console.Clear();
+            Main();
+        }
+        else if (menuSelect.Key == ConsoleKey.Enter)
+        {
+            Console.Clear();
+            PlayMineSweeper();
+        }
+        
     }
 
 
@@ -1010,7 +1023,22 @@ static void PlayMineSweeper()
         Console.WriteLine("There are no more mines!!");
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("██    ██  ██████  ██    ██     ██     ██ ██ ███    ██ ██ \n ██  ██  ██    ██ ██    ██     ██     ██ ██ ████   ██ ██ \n  ████   ██    ██ ██    ██     ██  █  ██ ██ ██ ██  ██ ██ \n   ██    ██    ██ ██    ██     ██ ███ ██ ██ ██  ██ ██    \n   ██     ██████   ██████       ███ ███  ██ ██   ████ ██ \n                                                         \n                                                         ");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("Press 'Esc' to return to menu, or 'Enter' to play again!");
         Console.ResetColor();
+        
+        ConsoleKeyInfo menuSelect = Console.ReadKey(true);
+        Console.ResetColor();
+        if (menuSelect.Key == ConsoleKey.Escape)
+        {
+            Console.Clear();
+            Main();
+        }
+        else if (menuSelect.Key == ConsoleKey.Enter)
+        {
+            Console.Clear();
+            PlayMineSweeper();
+        }
     }
 
     void DrawGrid()
